@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{fragmentos :: head}"/>
+
+    <body>
+        
+        <section th:fragment="agregar" class="sub-header">
+            <!-- Button trigger modal -->
+            <div class="div-multiple">
+                <div class="div-h3"><h2 class="color-black">Lista de Reuniones</h2></div>
+                <div class="div-h3">
+                    <button type="button" class="btn btn-primary" 
+                            data-bs-toggle="modal" data-bs-target="#agregarReunionModal">
+                        <i class="fa-solid fa-plus"></i>Agregar reunion</button>
+                </div> 
+            <!-- Modal -->
+            <div class="modal fade" id="agregarReunionModal"  tabindex="-1" 
+                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                <i class="fa-solid fa-layer-group"></i> Agregar Reunion</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action='@{/reunion/guardar}' th:object='${reunion}'
+                              class='was-validated' enctype="multipart/form-data" method="post">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label>Lista de salas</label>
+                                    <select th:field="*{sala.idSala}" 
+                                            class="form-select" 
+                                            aria-label="Default select example">
+                                        <option th:each="s : ${salas}" th:value="${s.idSala}">
+                                            [[${s.nombreSala}]]
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class='mb-3'>
+                                    <label>Id reunion</label>
+                                    <input type="number" name='idReunion' class='form-control' maxlength="50" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Titulo de reunion</label>                                    
+                                    <input type="text" name='tituloReunion' class='form-control' maxlength="50" required="true"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Fecha</label>                                    
+                                    <input type="date" class="form-control" th:field="*{fecha}" required="true"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Hora</label>                                    
+                                    <input type="text" name='hora' class='form-control' maxlength="50" required="true"/>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fa-solid fa-xmark"></i>Cerrar</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-floppy-disk"></i>Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section th:fragment="listado" class="p-3">
+            <div class="row p-3">
+                <div class="col-md-9">
+                    <div class="card p-2">
+                        <div class="card-header"><h4>Lista de Reuniones</h4></div>
+                        <div class="card-body">
+                            
+                            <div th:if="${reuniones != null and !reuniones.empty}">
+                                <table class="table table-striped table-hover">
+                                    <thead><tr><th>ID</th>
+                                            <th>Titulo de Reunion</th>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Sala</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="r : ${reuniones}">
+                                            <td>[[${r.idReunion}]]</td>
+                                            <td>[[${r.tituloReunion}]]</td>
+                                            <td th:text="${r.fecha != null ? r.fecha : 'NULL'}"></td>
+                                            <!--<td>[[${r.fecha}]]</td>-->
+                                            <td>[[${r.hora}]]</td>
+                                            <td>[[${r.sala.getNombreSala}]]</td>
+                                        </tr>
+                                    </tbody>
+                                </table></div>
+                            <div class="text-center p-2" th:if="${reuniones == null or reuniones.empty}">
+                                <span>Lista vacia</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center bg-success text-white mb-3">
+                        <div class="card-body"><h3>Total de reuniones</h3>
+                            <h4 class="fs-2"><i class="fas fa-layer-group"></i> [[${totalReuniones}]]</h4>
+                        </div></div>
+                </div>
+            </div>
+        </section>
+        
+        
+        
+    </body>
+</html>
